@@ -45,6 +45,7 @@ Set .env
 - DB_NAME=todolist.db
 
 ```bash
+# Run app
 python app.py
 ```
 
@@ -56,5 +57,5 @@ python app.py
 
 - Dự án này được cấp phép theo Giấy phép MIT. Xem tệp LICENSE để biết chi tiết.
 
-_Hoàn thành 21/9/2024_
-**_Cảm ơn bạn đã xem qua Chat App! Chúng tôi hy vọng bạn thấy nó hữu ích và thú vị. Chúc bạn lập trình vui vẻ!_**
+_Hoàn thành 19/10/2024_
+**_Cảm ơn bạn đã xem qua Todo List! Chúng tôi hy vọng bạn thấy nó hữu ích và thú vị. Chúc bạn lập trình vui vẻ!_**
