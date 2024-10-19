@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>{% block title %} {% endblock %}</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+    <link rel="icon" href="../static/logo.png" type="image/png">
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css" />
+    <style>
+        main {
+            background-color: rgb(255, 255, 255);
+        }
+
+        main>.container {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            min-height: calc(100vh - 56px);
+        }
+
+        .navbar {
+            background-color: #fff78c !important;
+        }
+        @media screen and (max-width: 992px) {
+            .xinchao{
+                text-align: center;
+                margin: 10px auto auto auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg ">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">TodoList<i class="ms-2 fa-regular fa-calendar-lines"></i></a>
+                <div class="ms-auto xinchao me-4 pt-1 order-2 order-lg-0">
+                    <h5 class="">Xin chào {{user.user_name}}</h5>
+                </div>
+                <a href="/logout" class="btn btn-outline-danger float-end">Logout<i
+                        class="fa-solid ms-1 fa-right-to-bracket"></i></a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        {% for cat, mess in messages %}
+        <div class="toast align-items-center text-bg-{{ 'danger' if cat == 'error' else 'success' }} border-0 show position-fixed top-0 end-0 m-3"
+            role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ mess }}
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %} {% endblock %}
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+            var toastList = toastElList.map(function (toastEl) {
+                var toast = new bootstrap.Toast(toastEl, { autohide: true, delay: 3000 })
+                return toast
+            })
+            toastList.forEach(toast => toast.show())
+        });
+    </script>
+
+</body>
+
+</html>

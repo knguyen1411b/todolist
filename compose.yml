@@ -1,0 +1,9 @@
+services:
+  todolist:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    image: todolist
+    container_name: todolist
+    ports:
+      - "5000:5000"

@@ -1,0 +1,4 @@
+venv/
+TodoList/__pycache__/
+# Khong sao luu database
+# instance/
