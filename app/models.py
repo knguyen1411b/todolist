@@ -2,8 +2,6 @@ from .db import db
 from sqlalchemy.sql import func
 from flask_login import UserMixin
 
-# TODO: Cấu trúc lại models để tối ưu hơn
-
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     

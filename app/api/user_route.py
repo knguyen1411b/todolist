@@ -24,7 +24,6 @@ def signin():
             login_user(result['user'], remember=True)
             flash('Logged in successfully!', category='success')
             
-            # Redirect đến trang được yêu cầu trước đó hoặc home
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('views.home'))
         else:
@@ -44,7 +43,6 @@ def signup():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         
-        # Kiểm tra các trường bắt buộc
         if not all([email, user_name, password, confirm_password]):
             flash('All fields are required!', category='error')
             return render_template('signup.html', user=current_user)
@@ -56,7 +54,6 @@ def signup():
             flash('Account created successfully! Welcome!', category='success')
             return redirect(url_for('views.home'))
         else:
-            # Hiển thị tất cả lỗi validation
             for error in result['errors']:
                 flash(error, category='error')
     

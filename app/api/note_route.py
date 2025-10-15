@@ -20,7 +20,6 @@ def home():
                 flash(result['error'], category='error')
         return redirect(url_for('views.home'))
     
-    # Lấy notes của user hiện tại
     notes = NoteService.get_user_notes(current_user.id)
     stats = {
         'total': len(notes),
@@ -37,10 +36,8 @@ def delete_note(note_id):
     result = NoteService.delete_note(note_id, current_user.id)
     
     if request.method == 'DELETE' or request.is_json:
-        # API response cho AJAX requests
         return jsonify(result), 200 if result['success'] else 404
     
-    # HTML form response
     if result['success']:
         flash('Note deleted successfully!', category='success')
     else:
@@ -55,10 +52,8 @@ def complete_note(note_id):
     result = NoteService.toggle_complete(note_id, current_user.id)
     
     if request.method == 'PATCH' or request.is_json:
-        # API response cho AJAX requests
         return jsonify(result), 200 if result['success'] else 404
     
-    # HTML form response
     if result['success']:
         status = 'complete' if result['is_complete'] else 'incomplete'
         flash(f'Note marked as {status}!', category='success')

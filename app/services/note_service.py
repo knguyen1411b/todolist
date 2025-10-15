@@ -7,7 +7,6 @@ class NoteService:
     @staticmethod
     def create_note(data, user_id):
         """Tạo note mới"""
-        # Sanitize và validate input
         data = sanitize_input(data)
         
         if len(data) < 1:

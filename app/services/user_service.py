@@ -9,17 +9,14 @@ class UserService:
     @staticmethod
     def create_user(email, username, password, confirm_password=None):
         """Tạo user mới với validation"""
-        # Validation
         validation_errors = UserService.validate_user_data(email, username, password, confirm_password)
         if validation_errors:
             return {'success': False, 'errors': validation_errors}
         
-        # Kiểm tra user đã tồn tại
         if UserService.user_exists(email, username):
             return {'success': False, 'errors': ['Email or username already exists']}
         
         try:
-            # Tạo user mới
             hashed_password = generate_password_hash(password)
             new_user = User(email=email, user_name=username, password=hashed_password)
             db.session.add(new_user)
@@ -45,31 +42,25 @@ class UserService:
         """Validate dữ liệu user"""
         errors = []
         
-        # Sanitize inputs
         email = sanitize_input(email)
         username = sanitize_input(username)
         
-        # Email validation
         if len(email) < 4:
             errors.append('Email must be greater than 4 characters')
         if not validate_email(email):
             errors.append('Invalid email address format')
         
-        # Username validation
         if len(username) < 2:
             errors.append('Username must be greater than 1 character')
         if len(username) > 150:
             errors.append('Username is too long (max 150 characters)')
         
-        # Password validation
         if len(password) < 6:
             errors.append('Password must be at least 6 characters long')
         
-        # Advanced password validation
         password_errors = validate_password_strength(password)
         errors.extend(password_errors)
         
-        # Confirm password validation
         if confirm_password and password != confirm_password:
             errors.append('Passwords do not match')
             

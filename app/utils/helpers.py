@@ -4,7 +4,7 @@ from typing import List
 
 try:
     from email_validator import validate_email as _validate_email_lib, EmailNotValidError
-except Exception:  # Fallback if dependency missing at runtime
+except Exception: 
     _validate_email_lib = None
     EmailNotValidError = Exception
 
@@ -12,11 +12,11 @@ except Exception:  # Fallback if dependency missing at runtime
 def sanitize_input(value: str) -> str:
     if value is None:
         return ''
-    # Normalize to string and trim whitespace
+
     text = str(value).strip()
-    # Basic script/style removal
+
     text = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", text, flags=re.IGNORECASE | re.DOTALL)
-    # Escape any remaining HTML
+
     return html.escape(text, quote=True)
 
 
@@ -29,7 +29,7 @@ def validate_email(email: str) -> bool:
             return True
         except EmailNotValidError:
             return False
-    # Simple regex fallback (not perfect, but reasonable)
+
     return re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email) is not None
 
 
