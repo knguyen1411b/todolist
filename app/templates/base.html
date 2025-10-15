@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}TodoList — Manage Your Notes & Tasks{% endblock %}</title>
+  <meta name="title" content="TodoList — Manage Your Notes & Tasks" />
+  <meta name="description" content="A simple Flask-based TodoList app with user login, task tracking, completion stats, and a beautiful TailwindCSS interface." />
+  <meta name="keywords" content="TodoList, Flask app, Python, TailwindCSS, task manager, note app, Flask SQLAlchemy, login system" />
+  <meta name="author" content="TodoList App Team" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="Vietnamese" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ request.url_root }}" />
+  <meta property="og:title" content="TodoList — Manage Your Notes & Tasks" />
+  <meta property="og:description" content="Organize your life with TodoList — a clean, minimal Flask app for managing tasks and notes efficiently." />
+  <meta property="og:image" content="{{ url_for('static', filename='images/og-preview.png', _external=True) }}" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#2563eb', soft: '#dbeafe' },
+            dark: '#1e293b'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="canonical" href="{{ request.url_root }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "TodoList",
+    "url": "{{ request.url_root }}",
+    "description": "A lightweight Flask TodoList app to manage your daily notes and tasks.",
+    "applicationCategory": "Productivity",
+    "operatingSystem": "All",
+    "creator": {
+      "@type": "Organization",
+      "name": "TodoList Dev Team"
+    }
+  }
+  </script>
+  <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css" />
+</head>
+
+<body class="bg-gray-50 min-h-screen flex flex-col font-[Inter,sans-serif] text-gray-800">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 font-semibold text-lg tracking-wide hover:opacity-90 transition">
+        <i class="fa-solid fa-calendar-check text-white text-xl"></i>
+        <span>TodoList</span>
+      </a>
+
+      <!-- Right side -->
+      <div class="flex items-center gap-4">
+        {% if user.is_authenticated %}
+        <div class="hidden sm:flex items-center gap-2 bg-blue-700/40 px-3 py-1.5 rounded-full">
+          <i class="fa-regular fa-circle-user text-white/90"></i>
+          <span class="text-sm font-medium">{{ user.user_name }}</span>
+        </div>
+        <a href="{{ url_for('user.logout') }}"
+          class="inline-flex items-center gap-1.5 border border-white/40 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg px-3 py-1.5 transition">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+        {% else %}
+        <a href="{{ url_for('user.login') }}"
+          class="inline-flex items-center gap-1.5 bg-white text-brand px-3 py-1.5 rounded-lg font-medium hover:bg-blue-50 transition">
+          <i class="fa-solid fa-right-to-bracket"></i> Login
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  <div id="flash-container" class="fixed top-5 right-5 space-y-3 z-50">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for cat, mess in messages %}
+    <div class="flex items-center gap-2 rounded-md shadow-lg px-4 py-3 text-sm text-white backdrop-blur-sm bg-opacity-90
+      {{ 'bg-red-500/90' if cat == 'error' else 'bg-emerald-500/90' }} animate-fadeIn">
+      <i
+        class="fa-solid {{ 'fa-circle-exclamation' if cat == 'error' else 'fa-circle-check' }} text-white text-base"></i>
+      <span>{{ mess }}</span>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Main content -->
+  <main class="flex-1 w-full">
+    <div class="max-w-7xl mx-auto px-4 py-10">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 text-center py-4 text-sm text-gray-500">
+    <p>Made with ❤️ using <span class="font-semibold text-brand">Flask</span> &amp; <span
+        class="font-semibold text-blue-500">TailwindCSS</span></p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Auto hide flash messages
+    setTimeout(() => {
+      const c = document.getElementById('flash-container');
+      if (c) c.innerHTML = '';
+    }, 3500);
+  </script>
+
+  <!-- Animations -->
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 0.4s ease-out;
+    }
+  </style>
+</body>
+
+</html>

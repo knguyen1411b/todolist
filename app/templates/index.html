@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}TodoList — Manage Your Notes & Tasks{% endblock %}
+{% block content %}
+<div class="space-y-8 animate-fadeIn">
+
+    <!-- Stats Section -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white p-5 text-center shadow-md hover:scale-[1.02] transition">
+            <div class="text-3xl font-bold flex items-center justify-center gap-2">
+                <i class="fa-solid fa-list-check"></i> {{ stats.total }}
+            </div>
+            <div class="text-sm opacity-90 mt-1">Total Notes</div>
+        </div>
+        <div class="rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-5 text-center shadow-md hover:scale-[1.02] transition">
+            <div class="text-3xl font-bold flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check"></i> {{ stats.completed }}
+            </div>
+            <div class="text-sm opacity-90 mt-1">Completed</div>
+        </div>
+        <div class="rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white p-5 text-center shadow-md hover:scale-[1.02] transition">
+            <div class="text-3xl font-bold flex items-center justify-center gap-2">
+                <i class="fa-solid fa-hourglass-half"></i> {{ stats.pending }}
+            </div>
+            <div class="text-sm opacity-90 mt-1">Pending</div>
+        </div>
+    </div>
+
+    <!-- Todo List Card -->
+    <div class="rounded-2xl border border-gray-200 shadow-md overflow-hidden bg-white">
+        <div class="flex items-center justify-between px-6 py-4 border-b bg-gray-50">
+            <h2 class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-list text-brand"></i> Todo List
+            </h2>
+            <a href="{{ url_for('user.profile') }}" class="text-brand hover:text-blue-600 text-sm flex items-center gap-1 transition">
+                <i class="fa-solid fa-circle-user text-lg"></i> Profile
+            </a>
+        </div>
+
+        <!-- Notes -->
+        <div>
+            <ul id="notes" class="divide-y divide-gray-200">
+                {% if notes %}
+                {% for note in notes %}
+                <li class="flex items-start justify-between gap-3 p-4 transition hover:bg-gray-50 {{ 'line-through text-gray-400' if note.complete }}">
+                    <div class="flex-1">
+                        <p class="mb-1 break-words">{{ note.data }}</p>
+                        <div class="text-xs text-gray-500 flex items-center gap-1">
+                            <i class="fa-regular fa-clock"></i> {{ note.format_date() }}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <!-- Toggle complete -->
+                        <form method="POST" action="{{ url_for('views.complete_note', note_id=note.id) }}">
+                            <button type="submit"
+                                class="inline-flex items-center justify-center rounded-md border px-2.5 py-1.5 text-xs font-medium shadow-sm transition
+                                {{ 'border-amber-400 text-amber-600 hover:bg-amber-50' if note.complete else 'border-emerald-400 text-emerald-600 hover:bg-emerald-50' }}"
+                                title="Toggle complete">
+                                {% if note.complete %}
+                                <i class="fa-solid fa-rotate-left"></i>
+                                {% else %}
+                                <i class="fa-solid fa-check"></i>
+                                {% endif %}
+                            </button>
+                        </form>
+
+                        <!-- Edit -->
+                        <button type="button"
+                            class="inline-flex items-center justify-center rounded-md border border-blue-400 text-blue-600 hover:bg-blue-50 px-2.5 py-1.5 text-xs font-medium shadow-sm transition"
+                            onclick="editNote({{ note.id }}, '{{ note.data}}')" title="Edit">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <!-- Delete -->
+                        <form method="POST" action="{{ url_for('views.delete_note', note_id=note.id) }}" onsubmit="return confirm('Delete this note?')">
+                            <button type="submit"
+                                class="inline-flex items-center justify-center rounded-md border border-red-300 text-red-600 hover:bg-red-50 px-2.5 py-1.5 text-xs font-medium shadow-sm transition"
+                                title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+                {% else %}
+                <li class="p-10 text-center text-gray-500 space-y-2">
+                    <i class="fa-solid fa-notes-medical text-4xl text-gray-400"></i>
+                    <p>No notes yet. Start by adding your first one!</p>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- Add New -->
+        <div class="px-6 py-4 border-t bg-gray-50">
+            <form action="{{ url_for('views.home') }}" method="post" id="noteForm" class="space-y-2">
+                <label for="note" class="text-sm font-medium text-gray-700 flex items-center gap-1">
+                    <i class="fa-solid fa-plus-circle text-brand"></i> Add a new note
+                </label>
+                <div class="flex gap-2">
+                    <input type="text"
+                        class="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand"
+                        placeholder="Enter your todo..." name="note" id="note" required maxlength="10000">
+                    <button type="submit"
+                        class="inline-flex items-center rounded-md bg-brand text-white px-4 py-2 text-sm hover:bg-blue-600 shadow transition">
+                        <i class="fa-solid fa-plus mr-2"></i>Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Note Modal -->
+<div id="editNoteModal" class="fixed inset-0 hidden items-center justify-center bg-black/50 backdrop-blur-sm z-50 transition-all">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-scaleUp">
+    <div class="px-5 py-3 border-b flex items-center justify-between">
+      <h3 class="font-semibold text-gray-700 flex items-center gap-2">
+        <i class="fa-solid fa-pen-to-square text-blue-500"></i> Edit Note
+      </h3>
+      <button onclick="closeEdit()" class="text-gray-400 hover:text-gray-600">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <form id="editNoteForm" method="post" class="animate-fadeIn">
+      <div class="p-5 space-y-3">
+        <label for="editNoteContent" class="text-sm text-gray-700">Note Content</label>
+        <textarea id="editNoteContent" name="note_data" rows="4"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand"
+          maxlength="10000" required></textarea>
+      </div>
+      <div class="px-5 py-3 border-t flex justify-end gap-2 bg-gray-50">
+        <button type="button" onclick="closeEdit()" class="rounded-md border px-4 py-2 text-sm hover:bg-gray-100 transition">Cancel</button>
+        <button type="submit" class="rounded-md bg-brand text-white px-4 py-2 text-sm hover:bg-blue-600 transition shadow">
+          <i class="fa-solid fa-floppy-disk mr-1"></i> Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  const modal = document.getElementById('editNoteModal');
+  function editNote(id, content) {
+      document.getElementById('editNoteContent').value = content;
+      document.getElementById('editNoteForm').action = `/edit-note/${id}`;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+  }
+  function closeEdit() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+  }
+  modal && modal.addEventListener('click', (e) => { if (e.target === modal) closeEdit(); });
+</script>
+
+<!-- Tailwind Animations -->
+<style>
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.animate-fadeIn { animation: fadeIn 0.4s ease-out; }
+.animate-scaleUp { animation: scaleUp 0.25s ease-out; }
+</style>
+{% endblock %}

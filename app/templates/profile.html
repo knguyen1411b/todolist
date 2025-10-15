@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Profile | TodoList — Manage Your Notes & Tasks{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto animate-fadeIn">
+  <!-- Card Container -->
+  <div class="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-brand-soft to-blue-50 px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+      <h1 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+        <i class="fa-solid fa-user-circle text-brand text-xl"></i>
+        User Profile
+      </h1>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- Left: Account Info -->
+      <section class="space-y-4">
+        <h2 class="text-sm font-medium text-gray-500 tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-id-card-clip text-gray-400"></i> Account Information
+        </h2>
+
+        <!-- Avatar -->
+        <div class="flex items-center gap-3">
+          <div class="w-14 h-14 rounded-full bg-brand-soft flex items-center justify-center text-brand text-2xl shadow-inner">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div>
+            <p class="text-gray-800 font-medium">{{ user.user_name or 'N/A' }}</p>
+            <p class="text-gray-500 text-sm">{{ user.email or 'N/A' }}</p>
+          </div>
+        </div>
+
+        <!-- Info List -->
+        <div class="mt-3 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600 flex items-center gap-1">
+              <i class="fa-solid fa-calendar"></i> Member Since
+            </span>
+            <span class="font-medium text-gray-900">
+              {% if user.created_at %}
+                {{ user.created_at.strftime('%b %d, %Y') }}
+              {% else %}
+                N/A
+              {% endif %}
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600 flex items-center gap-1">
+              <i class="fa-solid fa-envelope"></i> Email Verified
+            </span>
+            <span class="font-medium text-emerald-600">
+              <i class="fa-solid fa-circle-check"></i> Yes
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Stats -->
+      <section class="space-y-4">
+        <h2 class="text-sm font-medium text-gray-500 tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-chart-pie text-gray-400"></i> Todo Statistics
+        </h2>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="rounded-xl bg-blue-50 text-blue-700 p-4 text-center shadow-sm">
+            <i class="fa-solid fa-list-check text-lg mb-1"></i>
+            <div class="text-2xl font-bold">{{ stats.total_notes or 0 }}</div>
+            <div class="text-xs mt-1 uppercase tracking-wide">Total</div>
+          </div>
+
+          <div class="rounded-xl bg-emerald-50 text-emerald-700 p-4 text-center shadow-sm">
+            <i class="fa-solid fa-circle-check text-lg mb-1"></i>
+            <div class="text-2xl font-bold">{{ stats.completed_notes or 0 }}</div>
+            <div class="text-xs mt-1 uppercase tracking-wide">Completed</div>
+          </div>
+
+          <div class="rounded-xl bg-amber-50 text-amber-700 p-4 text-center shadow-sm">
+            <i class="fa-solid fa-hourglass-half text-lg mb-1"></i>
+            <div class="text-2xl font-bold">{{ stats.pending_notes or 0 }}</div>
+            <div class="text-xs mt-1 uppercase tracking-wide">Pending</div>
+          </div>
+        </div>
+
+        <!-- Completion Rate -->
+        <div class="mt-5">
+          <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
+            <span class="flex items-center gap-1"><i class="fa-solid fa-percent"></i> Completion Rate</span>
+            <span class="font-semibold text-gray-700">{{ stats.completion_rate or 0 }}%</span>
+          </div>
+          <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+            <div class="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-700 ease-in-out"
+              style="width: {{ stats.completion_rate or 0 }}%">
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row items-center gap-3 justify-between">
+      <a href="{{ url_for('views.home') }}" class="inline-flex items-center gap-2 rounded-md bg-brand text-white px-4 py-2 text-sm hover:brightness-95 transition shadow">
+        <i class="fa-solid fa-arrow-left"></i> Back to Todo List
+      </a>
+      <a href="{{ url_for('user.logout') }}" class="inline-flex items-center gap-2 rounded-md border border-red-300 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Small animation for fade in -->
+<style>
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fadeIn { animation: fadeIn 0.4s ease-out; }
+</style>
+
+{% endblock %}
