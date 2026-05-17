@@ -1,104 +1,106 @@
-# 📝 **TodoList (Flask) – Notes & To-Do App**
+# 📝 TodoList (Flask)
 
-A clean and minimal **Flask-based TodoList application** featuring user authentication, CRUD for notes, task completion tracking, and a personal profile dashboard.  
-Designed with **TailwindCSS** and **Font Awesome** for a modern and responsive user experience.
+A clean Flask notes and to-do app with authentication, note CRUD, completion tracking, profile statistics, and a small JSON API.
 
----
+> [!TIP]
+> This project is intentionally lightweight: SQLite by default, Tailwind via CDN, and no frontend build step.
 
-## ⚙️ **Tech Stack**
+## ✨ Features
 
-- **Backend:** Flask, Flask-Login, SQLAlchemy (SQLite)
-- **Frontend:** Jinja2 Templates, TailwindCSS (via CDN), Font Awesome
-- **Utilities:** python-dotenv, pytest
+- 🔐 User auth: sign up, sign in, logout, protected routes
+- 🗒️ Notes CRUD: create, edit, delete, mark complete/incomplete
+- 📊 Profile dashboard: total, completed, pending, completion rate
+- ⚙️ JSON API for note read/update/delete/toggle flows
+- 📱 Responsive UI with Jinja2 templates + TailwindCSS + Font Awesome
 
----
+## ⚙️ Tech Stack
 
-## ✨ **Features**
+- Backend: Flask, Flask-Login, Flask-SQLAlchemy, SQLite
+- Frontend: Jinja2, TailwindCSS (CDN), Font Awesome
+- Tooling: python-dotenv, pytest, GitHub Actions
 
-- 🔐 **User Authentication:** Register, login, logout, and secure route protection via Flask-Login.
-- 🗒️ **Notes Management:** Create, edit, delete, and toggle note completion status.
-- 📊 **Profile Dashboard:** Displays total, completed, and pending notes with completion rate visualization.
-- ⚙️ **JSON API:** Provides endpoints for managing notes (list, details, update, delete, toggle).
-- 🎨 **Modern Interface:** Clean UI with TailwindCSS, responsive layout, and smooth modal editing.
+## 📁 Project Structure
 
----
-
-## 🧩 **Project Structure**
-
+```text
 app/
-├── api/ # Blueprints for routes (user, notes)
-├── services/ # Business logic (user_service.py, note_service.py)
-├── templates/ # Jinja2 templates (base, index, profile)
-├── utils/ # Helpers, validators, error handlers
-├── models.py # User & Note models
-├── db.py # SQLAlchemy initialization
-instance/
-│ └── todolist.db # Auto-created SQLite database
-run.py # Application entry point
-requirements.txt # Dependencies
-tests/ # Basic pytest tests
+  api/           # Route blueprints
+  services/      # Business logic
+  templates/     # Jinja templates
+  utils/         # Helpers & error handlers
+  db.py          # SQLAlchemy init
+  models.py      # User, Note models
+tests/           # Pytest suite
+run.py           # App entrypoint
+requirements.txt
+```
 
----
+## 🚀 Quick Start
 
-## ⚡ **Main Routes**
+### 1. Install dependencies
 
-### 🌐 Web Interface
+```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS/Linux
+source .venv/bin/activate
 
-| Method                        | Route             | Description                         |
-| ----------------------------- | ----------------- | ----------------------------------- |
-| `GET /`, `POST /`             | Home page         | View and add notes (requires login) |
-| `POST /edit-note/<id>`        | Edit note content |
-| `POST /delete-note/<id>`      | Delete note       |
-| `POST /complete-note/<id>`    | Toggle completion |
-| `GET /signin`, `POST /signin` | Sign in           |
-| `GET /signup`, `POST /signup` | Register new user |
-| `GET /logout`                 | Logout            |
-| `GET /profile`                | User profile page |
+pip install -r requirements.txt
+```
 
-### 🧠 JSON API
+### 2. Configure environment
 
-| Method                         | Endpoint              | Description           |
-| ------------------------------ | --------------------- | --------------------- |
-| `GET /api/notes?completed=true | false`                | Fetch notes by status |
-| `GET /api/notes/<id>`          | Retrieve note details |
+Create `.env` from `.env.example` and update values.
 
----
+```env
+KEY=your_secret_key
+DB_NAME=instance/todolist.db
+HOST=0.0.0.0
+PORT=5000
+DEBUG=true
+```
 
-## 🧪 **Testing**
+### 3. Run the app
 
-- Automated tests using **pytest** for validation logic and service functions.
-- Includes checks for email validation, password strength, and user data integrity.
+```bash
+python run.py
+```
 
----
+Open `http://localhost:5000`.
 
-## 🚀 **Deployment Notes**
+## 🧪 Testing
 
-- TailwindCSS loaded via CDN for simplicity (no build step).
-- Database and tables auto-created on first run.
-- For production:
-  - Use a unique and secure `KEY`.
-  - Run with **Gunicorn/uWSGI** behind **Nginx** (avoid `app.run()` directly).
-  - Optionally migrate to PostgreSQL/MySQL via `SQLALCHEMY_DATABASE_URI`.
+```bash
+pytest
+```
 
----
+The CI workflow also runs tests on Python 3.10, 3.11, and 3.12 for pushes and pull requests to `main`.
 
-## 🔮 **Future Improvements**
+## 🌐 Main Routes
 
-- 🧭 Pagination and search functionality.
-- 🏷️ Tags or labels for better note organization.
-- 🖼️ Profile editing with avatar upload.
-- ✅ More comprehensive tests for `NoteService` and API endpoints.
+### Web
 
----
+- `GET /`, `POST /`: Home page + add note (login required)
+- `POST /edit-note/<id>`: Update note
+- `POST /delete-note/<id>`: Delete note
+- `POST /complete-note/<id>`: Toggle completion
+- `GET/POST /signin`: Sign in
+- `GET/POST /signup`: Register
+- `GET /logout`: Logout
+- `GET /profile`: User profile
 
-## 📄 **License**
+### API
 
-This project is for **educational and demonstration purposes**.  
-No license included — add one if you plan to distribute or deploy publicly.
+- `GET /api/notes?completed=true|false`: List notes by status
+- `GET /api/notes/<id>`: Get note details
 
----
+## ☁️ Deployment Notes
 
-## 🖼️ **Screenshots**
+- SQLite file is created automatically.
+- On Vercel environments, DB is stored in `/tmp/todolist.db`.
+- For production, use a strong `KEY` and run behind a production WSGI server.
+
+## 🖼️ Demo Screenshots
 
 |                  Sign In                   |                  Sign Up                   |
 | :----------------------------------------: | :----------------------------------------: |
@@ -110,4 +112,4 @@ No license included — add one if you plan to distribute or deploy publicly.
 
 ---
 
-**Made by Knguyen1411b ❤️**
+Made by Knguyen1411b
